@@ -1,0 +1,56 @@
+version: '3.6'
+services:
+  ipa2:
+        image: freeipa/freeipa-server:centos-8
+        hostname: ipa2
+        domainname: ipa2.wizznet.co.uk
+        container_name: ipa2
+        dns:
+          - 10.20.65.5
+          - 8.8.4.4
+          - 1.1.1.1
+        extra_hosts:
+          - "ipa2.wizznet.co.uk:10.21.65.5"
+        restart: unless-stopped
+        tty: true
+        stdin_open: true
+        environment:
+          - IPA_SERVER_HOSTNAME=ipa2.wizznet.co.uk
+          - IPA_SERVER_IP=10.21.65.5
+          - DNS=10.20.65.5
+        command:
+           - ipa-replica-install
+           - --domain=wizznet.co.uk
+           - --ip-address=10.21.65.5
+           - --server=ipa.wizznet.co.uk
+           - --admin-password=IN54N3LEYSTRONGPASSWORD
+           - --no-dnssec-validation
+           - --no-host-dns
+           - --setup-dns
+           - --setup-ca
+           - --auto-forwarders
+           - --allow-zone-overlap
+           - --unattended
+        sysctls:
+            - net.ipv6.conf.all.disable_ipv6=0
+        networks:
+            ipa:
+              ipv4_address: 10.21.65.5
+        volumes:
+            - ./db:/data
+            - ./logs:/var/logs
+            - /sys/fs/cgroup:/sys/fs/cgroup:ro
+        tmpfs:
+            - /run
+            - /var/cache
+            - /tmp
+        cap_add:
+            - SYS_TIME
+networks:
+  ipa:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1300
+    ipam:
+      config:
+        - subnet: "10.21.65.0/24"
