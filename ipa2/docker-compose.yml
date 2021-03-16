@@ -37,7 +37,7 @@ services:
             ipa:
               ipv4_address: 10.21.65.5
         volumes:
-            - ./db:/data
+            - ./data:/data
             - ./logs:/var/logs
             - /sys/fs/cgroup:/sys/fs/cgroup:ro
         tmpfs:
