@@ -9,6 +9,8 @@ Also note the docker bridge MTU size is reduced to 1300 bytes to allow for the e
 ### Install Vault
 on both nodes:
 
+`docker exec -it ipX bash`  # where X is the ipa container number, ipa1, ipa2 etc
+
 `ipa-kra-install -p my_admin_password`
 
 `ipa vault-add`
